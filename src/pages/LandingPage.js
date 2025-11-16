@@ -65,6 +65,7 @@ const LandingPage = () => {
     setSelectedState(state);
     setStateDropdownOpen(false);
     setSelectedCity('');
+    setCityDropdownOpen(false); // Close city dropdown when state changes
   };
 
   const handleCitySelect = (city) => {
@@ -72,23 +73,37 @@ const LandingPage = () => {
     setCityDropdownOpen(false);
   };
 
-  // Close dropdowns when clicking outside
+  // Close dropdowns when clicking outside (with delay for Cypress compatibility)
   useEffect(() => {
     const handleClickOutside = (event) => {
       const stateDiv = document.getElementById('state');
       const cityDiv = document.getElementById('city');
       
-      if (stateDiv && !stateDiv.contains(event.target)) {
-        setStateDropdownOpen(false);
+      // Check if click is outside state dropdown
+      if (stateDropdownOpen && stateDiv && !stateDiv.contains(event.target)) {
+        // Don't close if clicking on city dropdown
+        if (!cityDiv || !cityDiv.contains(event.target)) {
+          setStateDropdownOpen(false);
+        }
       }
-      if (cityDiv && !cityDiv.contains(event.target)) {
-        setCityDropdownOpen(false);
+      
+      // Check if click is outside city dropdown
+      if (cityDropdownOpen && cityDiv && !cityDiv.contains(event.target)) {
+        // Don't close if clicking on state dropdown
+        if (!stateDiv || !stateDiv.contains(event.target)) {
+          setCityDropdownOpen(false);
+        }
       }
     };
 
     if (stateDropdownOpen || cityDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      // Use a small delay to allow Cypress interactions
+      const timeoutId = setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+      }, 50);
+      
       return () => {
+        clearTimeout(timeoutId);
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }
@@ -185,7 +200,8 @@ const LandingPage = () => {
                 className="custom-dropdown"
                 onClick={(e) => {
                   // If clicking on the toggle or container (but not on menu items), toggle dropdown
-                  if (!e.target.closest('li') && selectedState && !loading) {
+                  // Always allow opening if state is selected (for Cypress compatibility)
+                  if (!e.target.closest('li') && selectedState) {
                     setCityDropdownOpen(!cityDropdownOpen);
                   }
                 }}
@@ -194,20 +210,26 @@ const LandingPage = () => {
                   {selectedCity || 'Select City'}
                   <span className="dropdown-arrow">▼</span>
                 </div>
-                {cityDropdownOpen && selectedState && !loading && (
+                {cityDropdownOpen && selectedState && (
                   <ul className="dropdown-menu">
-                    {cities.map((city, index) => (
-                      <li
-                        key={index}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCitySelect(city);
-                        }}
-                        className={selectedCity === city ? 'selected' : ''}
-                      >
-                        {city}
-                      </li>
-                    ))}
+                    {loading ? (
+                      <li className="loading-item">Loading cities...</li>
+                    ) : cities.length > 0 ? (
+                      cities.map((city, index) => (
+                        <li
+                          key={index}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCitySelect(city);
+                          }}
+                          className={selectedCity === city ? 'selected' : ''}
+                        >
+                          {city}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="no-items">No cities available</li>
+                    )}
                   </ul>
                 )}
               </div>
