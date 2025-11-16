@@ -1,0 +1,176 @@
+.booking-page {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.booking-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.booking-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.booking-header h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.center-info h3 {
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+}
+
+.center-info p {
+  color: #666;
+  margin: 0;
+}
+
+.booking-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-section,
+.time-section {
+  margin-bottom: 2rem;
+}
+
+.calendar-section h3,
+.time-section h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.dates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.date-button {
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.date-button:hover {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.date-button.selected {
+  border-color: #2563eb;
+  background-color: #2563eb;
+  color: white;
+}
+
+.date-button p {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin: 0;
+  color: inherit;
+}
+
+.date-button span {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.date-button .month {
+  font-size: 0.875rem;
+  font-weight: normal;
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.time-group p {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.time-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.time-button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+
+.time-button:hover {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.time-button.selected {
+  border-color: #2563eb;
+  background-color: #2563eb;
+  color: white;
+}
+
+.confirm-booking-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 2rem;
+}
+
+.confirm-booking-button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.confirm-booking-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .booking-container {
+    padding: 1rem;
+  }
+
+  .dates-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .time-buttons {
+    justify-content: center;
+  }
+}
+
