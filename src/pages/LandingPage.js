@@ -75,19 +75,24 @@ const LandingPage = () => {
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('#state')) {
+      const stateDiv = document.getElementById('state');
+      const cityDiv = document.getElementById('city');
+      
+      if (stateDiv && !stateDiv.contains(event.target)) {
         setStateDropdownOpen(false);
       }
-      if (!event.target.closest('#city')) {
+      if (cityDiv && !cityDiv.contains(event.target)) {
         setCityDropdownOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    if (stateDropdownOpen || cityDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [stateDropdownOpen, cityDropdownOpen]);
 
   return (
     <div className="landing-page">
@@ -141,11 +146,17 @@ const LandingPage = () => {
           <form onSubmit={handleSubmit} className="search-form">
             <div className="form-group">
               <label htmlFor="state-select">State</label>
-              <div id="state" className="custom-dropdown">
-                <div
-                  className="dropdown-toggle"
-                  onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
-                >
+              <div 
+                id="state" 
+                className="custom-dropdown"
+                onClick={(e) => {
+                  // If clicking on the toggle or container (but not on menu items), toggle dropdown
+                  if (!e.target.closest('li')) {
+                    setStateDropdownOpen(!stateDropdownOpen);
+                  }
+                }}
+              >
+                <div className="dropdown-toggle">
                   {selectedState || 'Select State'}
                   <span className="dropdown-arrow">▼</span>
                 </div>
@@ -154,7 +165,10 @@ const LandingPage = () => {
                     {states.map((state, index) => (
                       <li
                         key={index}
-                        onClick={() => handleStateSelect(state)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStateSelect(state);
+                        }}
                         className={selectedState === state ? 'selected' : ''}
                       >
                         {state}
@@ -166,11 +180,17 @@ const LandingPage = () => {
             </div>
             <div className="form-group">
               <label htmlFor="city-select">City</label>
-              <div id="city" className="custom-dropdown">
-                <div
-                  className={`dropdown-toggle ${!selectedState || loading ? 'disabled' : ''}`}
-                  onClick={() => !loading && selectedState && setCityDropdownOpen(!cityDropdownOpen)}
-                >
+              <div 
+                id="city" 
+                className="custom-dropdown"
+                onClick={(e) => {
+                  // If clicking on the toggle or container (but not on menu items), toggle dropdown
+                  if (!e.target.closest('li') && selectedState && !loading) {
+                    setCityDropdownOpen(!cityDropdownOpen);
+                  }
+                }}
+              >
+                <div className={`dropdown-toggle ${!selectedState || loading ? 'disabled' : ''}`}>
                   {selectedCity || 'Select City'}
                   <span className="dropdown-arrow">▼</span>
                 </div>
@@ -179,7 +199,10 @@ const LandingPage = () => {
                     {cities.map((city, index) => (
                       <li
                         key={index}
-                        onClick={() => handleCitySelect(city)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCitySelect(city);
+                        }}
                         className={selectedCity === city ? 'selected' : ''}
                       >
                         {city}
